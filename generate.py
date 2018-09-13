@@ -11,28 +11,24 @@ import random
 from PIL import Image
 from math import floor
 
-# Config
-# resolution      = (416,416)
-backgrounds_dir = "backgrounds"
-classes_dir     = "crops"
-output          = "images_out"
-maxobjs         = 6
+def initialize(backgrounds_dir, classes_dir):
+    # Loading data
+    backgrounds = os.listdir(backgrounds_dir)
+    class_names = os.listdir(classes_dir)
+    class_objects = [os.listdir(os.path.join(classes_dir,c)) for c in class_names]
 
-# Loading data
-backgrounds = os.listdir(backgrounds_dir)
-class_names = os.listdir(classes_dir)
-class_objects = [os.listdir(os.path.join(classes_dir,c)) for c in class_names]
+    # ignore scaling for now: .resize(resolution, Image.BICUBIC)
+    bgs = [Image.open(os.path.join(backgrounds_dir,b)) for b in backgrounds]
 
-# ignore scaling for now: .resize(resolution, Image.BICUBIC)
-bgs = [Image.open(os.path.join(backgrounds_dir,b)) for b in backgrounds]
+    objs = []
+    for i,c in enumerate(class_objects):
+        print('loading '+class_names[i]+' as '+str(i))
+        objs = objs + [[Image.open(os.path.join(classes_dir,class_names[i],o)) for o in c]]
 
-objs = []
-for i,c in enumerate(class_objects):
-    print('loading '+class_names[i]+' as '+str(i))
-    objs = objs + [[Image.open(os.path.join(classes_dir,class_names[i],o)) for o in c]]
+    return objs, class_names, bgs
 
 # Simulate an image
-def mkimage(filename, objs=objs, bgs=bgs):
+def mkimage(filename, objs, names, bgs, maxobjs, output_dir="images_out"):
     log = []
     im = bgs[random.randint(0,len(backgrounds)-1)].copy()
     print('bg size='+str(im.size))
@@ -44,9 +40,11 @@ def mkimage(filename, objs=objs, bgs=bgs):
         posx = random.randint(-floor(sizex/2),imx-floor(sizex/2))
         posy = random.randint(-floor(sizey/2),imy-floor(sizey/2))
         im.paste(obj,(posx,posy),obj)
-        log = log + ['{}\t{}\t{}\t{}\t{}\t{}\n'.format(class_names[cls],cls,posy,posx,posy+sizey,posx+sizex)]
-    im.save(os.path.join(output,filename+'.png'))
-    with open(os.path.join(output,filename+'.txt'),'w') as f:
+        log = log + ['{}\t{}\t{}\t{}\t{}\t{}\n'.format(names[cls],cls,posy,posx,posy+sizey,posx+sizex)]
+    im.save(os.path.join(output_dir,filename+'.png'))
+    with open(os.path.join(output_dir,filename+'.txt'),'w') as f:
         for l in log: f.write(l)
 
-mkimage('test')
+# Testing
+objects, names, backgrounds = initialize(backgrounds_dir="backgrounds", classes_dir="crops")
+mkimage('test', objects, names, backgrounds, output_dir="images_out", maxobjs=6)
