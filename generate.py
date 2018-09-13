@@ -11,19 +11,19 @@ import random
 from PIL import Image
 from math import floor
 
-# *** Config ***
+# Config
 resolution      = (416,416)
 backgrounds_dir = "backgrounds"
 classes_dir     = "crops"
 output          = "images_out"
 maxobjs         = 6
 
-# *** loading data ****
+# Loading data
 backgrounds = os.listdir(backgrounds_dir)
 class_names = os.listdir(classes_dir)
 class_objects = [os.listdir(os.path.join(classes_dir,c)) for c in class_names]
 
-# .resize(resolution, Image.BICUBIC)
+# ignore scaling for now: .resize(resolution, Image.BICUBIC)
 bgs = [Image.open(os.path.join(backgrounds_dir,b)) for b in backgrounds]
 
 objs = []
