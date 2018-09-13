@@ -31,21 +31,22 @@ for i,c in enumerate(class_objects):
     print('loading '+class_names[i]+' as '+str(i))
     objs = objs + [[Image.open(os.path.join(classes_dir,class_names[i],o)) for o in c]]
 
-# *** simulate an image ***
-
-def mkimage(imgid):
+# Simulate an image
+def mkimage(filename, objs=objs, bgs=bgs):
     log = []
     im = bgs[random.randint(0,len(backgrounds)-1)].copy()
+    print('bg size='+str(im.size))
     for c in range(0,random.randint(1,maxobjs)):
         cls = random.randint(0,len(objs)-1)
         obj = random.choice(objs[cls])
         sizex,sizey = obj.size
-        posx = random.randint(-floor(sizex/2),resolution[0]+floor(sizex/2))
-        posy = random.randint(-floor(sizey/2),resolution[1]+floor(sizey/2))
+        imx,imy = im.size
+        posx = random.randint(-floor(sizex/2),imx-floor(sizex/2))
+        posy = random.randint(-floor(sizey/2),imy-floor(sizey/2))
         im.paste(obj,(posx,posy),obj)
         log = log + ['{}\t{}\t{}\t{}\t{}\n'.format(cls,posy,posx,posy+sizey,posx+sizex)]
-    im.save(os.path.join(output,imgid+'.png'))
-    with open(os.path.join(output,imgid+'.txt'),'a') as f:
+    im.save(os.path.join(output,filename+'.png'))
+    with open(os.path.join(output,filename+'.txt'),'w') as f:
         for l in log: f.write(l)
 
 mkimage('test')
