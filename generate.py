@@ -44,7 +44,7 @@ def mkimage(filename, objs=objs, bgs=bgs):
         posx = random.randint(-floor(sizex/2),imx-floor(sizex/2))
         posy = random.randint(-floor(sizey/2),imy-floor(sizey/2))
         im.paste(obj,(posx,posy),obj)
-        log = log + ['{}\t{}\t{}\t{}\t{}\n'.format(cls,posy,posx,posy+sizey,posx+sizex)]
+        log = log + ['{}\t{}\t{}\t{}\t{}\t{}\n'.format(class_names[cls],cls,posy,posx,posy+sizey,posx+sizex)]
     im.save(os.path.join(output,filename+'.png'))
     with open(os.path.join(output,filename+'.txt'),'w') as f:
         for l in log: f.write(l)
