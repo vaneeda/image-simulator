@@ -12,7 +12,7 @@ from PIL import Image
 from math import floor
 
 # Config
-resolution      = (416,416)
+# resolution      = (416,416)
 backgrounds_dir = "backgrounds"
 classes_dir     = "crops"
 output          = "images_out"
