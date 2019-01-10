@@ -30,7 +30,7 @@ def initialize(backgrounds_dir, classes_dir):
 # Simulate an image
 def mkimage(filename, objs, names, bgs, maxobjs, output_dir="images_out"):
     log = []
-    im = bgs[random.randint(0,len(backgrounds)-1)].copy()
+    im = bgs[random.randint(0,len(bgs)-1)].copy()
     print('bg size='+str(im.size))
     for c in range(0,random.randint(1,maxobjs)):
         cls = random.randint(0,len(objs)-1)
@@ -46,5 +46,6 @@ def mkimage(filename, objs, names, bgs, maxobjs, output_dir="images_out"):
         for l in log: f.write(l)
 
 # Testing
-objects, names, backgrounds = initialize(backgrounds_dir="backgrounds", classes_dir="crops")
-mkimage('test', objects, names, backgrounds, output_dir="images_out", maxobjs=6)
+def test():
+    objects, names, backgrounds = initialize(backgrounds_dir="backgrounds", classes_dir="crops")
+    mkimage('test', objects, names, backgrounds, output_dir="images_out", maxobjs=6)
