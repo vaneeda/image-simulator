@@ -32,6 +32,6 @@ if args.e == None: e=6
 else: e=int(args.e)
 
 for i in range(1,int(n)+1):
-    mkimage('test_%d' % int(i), objects, names, backgrounds, output_dir=args.o, maxobjs=e)
+    mkimage('test_%d' % int(i), objects, names, backgrounds, output_dir=args.o, maxobjs=e, single=args.single)
 
     

@@ -28,12 +28,14 @@ def initialize(backgrounds_dir, classes_dir):
     return objs, class_names, bgs
 
 # Simulate an image
-def mkimage(filename, objs, names, bgs, maxobjs, output_dir="images_out"):
+def mkimage(filename, objs, names, bgs, maxobjs, output_dir="images_out",single=False):
     log = []
     im = bgs[random.randint(0,len(bgs)-1)].copy()
-    print('bg size='+str(im.size))
+    # print('bg size='+str(im.size))
+    cls0 = random.randint(0,len(objs)-1)
     for c in range(0,random.randint(1,maxobjs)):
-        cls = random.randint(0,len(objs)-1)
+        if single: cls=cls0
+        else: cls = random.randint(0,len(objs)-1)
         obj = random.choice(objs[cls])
         sizex,sizey = obj.size
         imx,imy = im.size
