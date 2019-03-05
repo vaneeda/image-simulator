@@ -46,16 +46,21 @@ def mkimage(filename, objs, names, bgs, maxobjs, output_dir="images_out",single=
     log = []
     im = bgs[random.randint(0,len(bgs)-1)].copy()
     # print('bg size='+str(im.size))
-    cls0 = random.randint(0,len(objs)-1)
-    for c in range(0, random.randint(1, maxobjs)):
+    cls0 = random.randint(0,len(objs)-1)   # Selects random class
+
+    num_obj= random.randint(1, maxobjs)   # Randomly chooses a number of objects (max no defined by user)
+    scale_list= [i/100 for i in random.sample(range(80,120), num_obj)]
+    scale_list.sort()
+
+    for c in range(0, num_obj):
 
         if single: cls=cls0
         else: cls = random.randint(0,len(objs)-1)
-        obj = random.choice(objs[cls])
+        obj = random.choice(objs[cls]) #Selects a random object from the selected class
         sizex,sizey = obj.size
         imx,imy = im.size
-        posx = random.randint(-floor(sizex/2),imx-floor(sizex/2))
-        posy = random.randint(-floor(sizey/2),imy-floor(sizey/2))
+        posx = random.randint(-floor(sizex/2),imx-floor(sizex*scale_list[c]/2))
+        posy = random.randint(-floor(sizey/2),imy-floor(sizey*scale_list[c]/2))
         im.paste(obj,(posx,posy),obj)
         log = log + ['{}\t{}\t{}\t{}\t{}\t{}\n'.format(names[cls],cls,posy,posx,posy+sizey,posx+sizex)]
     im.save(os.path.join(output_dir,filename+'.png'))
