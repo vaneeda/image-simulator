@@ -70,13 +70,13 @@ def mkimage(filename, objs, names, bgs, maxobjs, output_dir="images_out",single=
         norm = sqrt(obj.size[0]*obj.size[1])
         obj  = obj.resize([int(dict[names[cls]]*s*scale_list[c]*300/norm) for s in obj.size], Image.ANTIALIAS)
         obj  = obj.rotate(random.gauss(0,8), expand=1, resample=Image.NEAREST)
-        sizex, sizey = obj.size
         imx,imy = im.size
         posx = random.randint(-floor(obj.size[0]/3),imx-floor(2*obj.size[0]/3))
         posy = random.randint(-floor(obj.size[1]/3),imy-floor(2*obj.size[1]/3))
         im.paste(obj,(posx,posy),obj)
-        log = log + ['{}\t{}\t{}\t{}\t{}\t{}\n'.format(names[cls],cls,posy,posx,posy+sizey,posx+sizex)]
-
+        path_to_image = os.path.join(output_dir, filename + '.png')
+        log = log + ['{},{},{},{},{},{}\n'.format(path_to_image, posx, posy, posx + obj.size[0], posy + obj.size[1],
+                                              names[cls])]
     im.save(os.path.join(output_dir,filename+'.png'))
     with open(os.path.join(output_dir,filename+'.txt'),'w') as f:
         for l in log: f.write(l)
