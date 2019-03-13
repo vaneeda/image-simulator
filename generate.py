@@ -7,7 +7,10 @@ if sys.version_info < (3, 0):
 import os
 import random
 from PIL import Image
-from math import floor
+from math import floor, sqrt
+
+dict = {"mackerel": 35/35, "bluewhiting": 27/35, "herring": 33/35, "krill": 3/35, "benthosema": 9/35}
+
 
 def initialize(backgrounds_dir, classes_dir):
     # Loading data
@@ -57,12 +60,23 @@ def mkimage(filename, objs, names, bgs, maxobjs, output_dir="images_out",single=
         if single: cls=cls0
         else: cls = random.randint(0,len(objs)-1)
         obj = random.choice(objs[cls]) #Selects a random object from the selected class
-        sizex,sizey = obj.size
+        # random modifications
+        flipLR, flipTB = random.randint(0, 3), random.randint(0, 10)  # random flip
+        if (flipLR == 0):
+            obj = obj.transpose(Image.FLIP_LEFT_RIGHT)
+        if (flipTB == 0):
+            obj = obj.transpose(Image.FLIP_TOP_BOTTOM)
+
+        norm = sqrt(obj.size[0]*obj.size[1])
+        obj  = obj.resize([int(dict[names[cls]]*s*scale_list[c]*300/norm) for s in obj.size], Image.ANTIALIAS)
+        obj  = obj.rotate(random.gauss(0,8), expand=1, resample=Image.NEAREST)
+        sizex, sizey = obj.size
         imx,imy = im.size
-        posx = random.randint(-floor(sizex/2),imx-floor(sizex*scale_list[c]/2))
-        posy = random.randint(-floor(sizey/2),imy-floor(sizey*scale_list[c]/2))
+        posx = random.randint(-floor(obj.size[0]/3),imx-floor(2*obj.size[0]/3))
+        posy = random.randint(-floor(obj.size[1]/3),imy-floor(2*obj.size[1]/3))
         im.paste(obj,(posx,posy),obj)
         log = log + ['{}\t{}\t{}\t{}\t{}\t{}\n'.format(names[cls],cls,posy,posx,posy+sizey,posx+sizex)]
+
     im.save(os.path.join(output_dir,filename+'.png'))
     with open(os.path.join(output_dir,filename+'.txt'),'w') as f:
         for l in log: f.write(l)
