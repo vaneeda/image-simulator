@@ -9,7 +9,7 @@ import random
 from PIL import Image
 from math import floor, sqrt
 
-dict = {"mackerel": 35/35, "bluewhiting": 27/35, "herring": 33/35, "krill": 3/35, "benthosema": 9/35}
+dict = {"mackerel": 35/35, "bluewhiting": 27/35, "herring": 33/35, "krill": 1/35, "benthosema": 9/35}
 
 
 def initialize(backgrounds_dir, classes_dir):
@@ -52,7 +52,7 @@ def mkimage(filename, objs, names, bgs, maxobjs, output_dir="images_out",single=
     cls0 = random.randint(0,len(objs)-1)   # Selects random class
 
     num_obj= random.randint(1, maxobjs)   # Randomly chooses a number of objects (max no defined by user)
-    scale_list= [i/100 for i in random.sample(range(80,120), num_obj)]
+    scale_list= [i/100 for i in random.sample(range(80,200), num_obj)]
     scale_list.sort()
 
     for c in range(0, num_obj):
@@ -66,17 +66,17 @@ def mkimage(filename, objs, names, bgs, maxobjs, output_dir="images_out",single=
             obj = obj.transpose(Image.FLIP_LEFT_RIGHT)
         if (flipTB == 0):
             obj = obj.transpose(Image.FLIP_TOP_BOTTOM)
-
         norm = sqrt(obj.size[0]*obj.size[1])
         obj  = obj.resize([int(dict[names[cls]]*s*scale_list[c]*300/norm) for s in obj.size], Image.ANTIALIAS)
         obj  = obj.rotate(random.gauss(0,8), expand=1, resample=Image.NEAREST)
         imx,imy = im.size
-        posx = random.randint(-floor(obj.size[0]/3),imx-floor(2*obj.size[0]/3))
-        posy = random.randint(-floor(obj.size[1]/3),imy-floor(2*obj.size[1]/3))
+        posx = random.randint(-floor(3*obj.size[0]/4),imx-floor(obj.size[0]/4))
+        posy = random.randint(-floor(3*obj.size[1]/4),imy-floor(obj.size[1]/4))
         im.paste(obj,(posx,posy),obj)
         path_to_image = os.path.join(output_dir, filename + '.png')
         log = log + ['{},{},{},{},{},{}\n'.format(path_to_image, posx, posy, posx + obj.size[0], posy + obj.size[1],
                                               names[cls])]
+
     im.save(os.path.join(output_dir,filename+'.png'))
     with open(os.path.join(output_dir,filename+'.txt'),'w') as f:
         for l in log: f.write(l)
