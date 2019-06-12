@@ -74,8 +74,9 @@ def mkimage(filename, objs, names, bgs, maxobjs, output_dir="images_out",single=
         posy = random.randint(-floor(3*obj.size[1]/4),imy-floor(obj.size[1]/4))
         im.paste(obj,(posx,posy),obj)
         path_to_image = os.path.join(output_dir, filename + '.png')
-        log = log + ['{},{},{},{},{},{}\n'.format(path_to_image, posx, posy, posx + obj.size[0], posy + obj.size[1],
-                                              names[cls])]
+        log = log + [
+            '{},{},{},{},{},{}\n'.format(path_to_image, max(0, posx), max(0, posy), min(posx + obj.size[0], imx),
+                                         min(posy + obj.size[1], imy), names[cls])]
 
     im.save(os.path.join(output_dir,filename+'.png'))
     with open(os.path.join(output_dir,filename+'.txt'),'w') as f:
