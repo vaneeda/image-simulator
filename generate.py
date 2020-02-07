@@ -9,8 +9,7 @@ import random
 from PIL import Image
 from math import floor, sqrt
 
-dict = {"mackerel": 35/35, "bluewhiting": 27/35, "herring": 33/35, "krill": 1/35, "benthosema": 9/35}
-
+dict = {"mackerel": 35/35, "bluewhiting": 27/35, "herring": 33/35, "krill": 1/35, "lanternfish": 9/35}
 
 def initialize(backgrounds_dir, classes_dir):
     # Loading data
@@ -48,7 +47,6 @@ def mkimage(filename, objs, names, bgs, maxobjs, output_dir="images_out",single=
 
     log = []
     im = bgs[random.randint(0,len(bgs)-1)].copy()
-    # print('bg size='+str(im.size))
     cls0 = random.randint(0,len(objs)-1)   # Selects random class
 
     num_obj= random.randint(1, maxobjs)   # Randomly chooses a number of objects (max no defined by user)
@@ -67,16 +65,20 @@ def mkimage(filename, objs, names, bgs, maxobjs, output_dir="images_out",single=
         if (flipTB == 0):
             obj = obj.transpose(Image.FLIP_TOP_BOTTOM)
         norm = sqrt(obj.size[0]*obj.size[1])
-        obj  = obj.resize([int(dict[names[cls]]*s*scale_list[c]*300/norm) for s in obj.size], Image.ANTIALIAS)
+        obj  = obj.resize([int(dict[names[cls]]*s*scale_list[c]*300/norm) for s in obj.size],
+                          Image.ANTIALIAS)
         obj  = obj.rotate(random.gauss(0,8), expand=1, resample=Image.NEAREST)
         imx,imy = im.size
         posx = random.randint(-floor(3*obj.size[0]/4),imx-floor(obj.size[0]/4))
         posy = random.randint(-floor(3*obj.size[1]/4),imy-floor(obj.size[1]/4))
         im.paste(obj,(posx,posy),obj)
         path_to_image = os.path.join(output_dir, filename + '.png')
-        log = log + [
-            '{},{},{},{},{},{}\n'.format(path_to_image, max(0, posx), max(0, posy), min(posx + obj.size[0], imx),
-                                         min(posy + obj.size[1], imy), names[cls])]
+        log = log + ['{},{},{},{},{},{}\n'.format(path_to_image,
+                                                  max(0, posx),
+                                                  max(0, posy),
+                                                  min(posx + obj.size[0], imx),
+                                                  min(posy + obj.size[1], imy),
+                                                  names[cls])]
 
     im.save(os.path.join(output_dir,filename+'.png'))
     with open(os.path.join(output_dir,filename+'.txt'),'w') as f:
