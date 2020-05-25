@@ -34,6 +34,9 @@ n = int(args.n)
 
 output_dir = os.path.join(args.path_to_directory, args.o)
 
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+
 for i in range(1,int(n)+1):
     mkimage(args.o+'_%d' % int(i), objects, names, backgrounds,
             output_dir=output_dir, maxobjs=args.e, single=args.single)
