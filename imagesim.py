@@ -18,9 +18,9 @@ p.add_argument('-c', '--classes', default = 'crops'
                , help='directory containing element images, one subdirectory per class')
 p.add_argument('-s', '--single', action='store_true'
                , help='generate images containing one class elements only')
-p.add_argument('-n'
+p.add_argument('-n', type=int
                , help='number of images to generate')
-p.add_argument('-e', default = 6
+p.add_argument('-e', type=int, default = 6
                , help='max number of elements per image')
 p.add_argument('-o'
                , help='directory to store generated images')
@@ -30,14 +30,12 @@ args = p.parse_args()
 backgrounds_dir = os.path.join(args.path_to_directory, args.backgrounds)
 classes_dir = os.path.join(args.path_to_directory, args.classes)
 objects, names, backgrounds = initialize(backgrounds_dir, classes_dir)
-n = int(args.n)
-
 output_dir = os.path.join(args.path_to_directory, args.o)
 
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
-for i in range(1,int(n)+1):
+for i in range(1,args.n +1):
     mkimage(args.o+'_%d' % int(i), objects, names, backgrounds,
             output_dir=output_dir, maxobjs=args.e, single=args.single)
 
