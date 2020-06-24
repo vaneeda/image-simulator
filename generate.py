@@ -9,7 +9,7 @@ import random
 from PIL import Image
 from math import floor, sqrt
 
-dict = {"mackerel": 35/35, "bluewhiting": 27/35, "herring": 33/35, "krill": 1/35, "lanternfish": 9/35}
+dict = {"mackerel": 35/35, "bluewhiting": 27/35, "herring": 33/35, "krill": 1/35, "mesopelagic": 9/35}
 
 def initialize(backgrounds_dir, classes_dir):
     # Loading data
